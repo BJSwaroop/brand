@@ -222,6 +222,30 @@
 
 
 
+
+  /* ---------- title slide photo ---------- */
+  .title-grid{display:grid;grid-template-columns:1fr auto;gap:2.2rem;align-items:center}
+  .title-photo img,.photo-pending{
+    width:12.5rem;height:16.6rem;min-width:180px;object-fit:cover;object-position:center top;
+    border-radius:3px;display:block;background:var(--panel);border:1px solid var(--line);
+  }
+  .photo-pending{display:grid;place-content:center;font-family:var(--font-mono);
+    font-size:max(11px,.6rem);letter-spacing:.12em;color:var(--faint);text-align:center;border-style:dashed}
+  @media (max-width:860px){
+    .title-grid{grid-template-columns:1fr;gap:1.2rem}
+    .title-photo{order:-1}
+    .title-photo img,.photo-pending{width:7.5rem;height:10rem;min-width:120px}
+  }
+
+  /* ---------- single closing CTA ---------- */
+  .cta-solo{margin-top:1.4rem;display:flex;flex-wrap:wrap;gap:2rem;align-items:center}
+  .cta-solo .qr-box{width:10.5rem;height:10.5rem;min-width:190px;min-height:190px}
+  .cta-copy{max-width:20rem}
+  .cta-copy h3{font-family:var(--font-display);font-weight:800;font-size:1.5rem;letter-spacing:-.02em;line-height:1.15}
+  .cta-copy p{margin-top:.6rem;color:var(--muted);font-size:1rem;line-height:1.35}
+  .cta-copy .pin{margin-top:.9rem;font-family:var(--font-mono);font-size:max(11px,.6rem);
+    letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+
   /* ---------- act dividers (chapter markers) ---------- */
   .act-divider .slide-in{max-width:44rem}
   .act-count{font-family:var(--font-mono);font-size:max(14px,1.15rem);letter-spacing:.26em;
@@ -307,14 +331,21 @@
   <!-- 1 · TITLE -->
   <section class="slide" data-act="TITLE">
     <div class="slide-in">
-      <p class="title-kicker">Personal branding session</p>
-      <h1 class="huge">From student<br>to creator.</h1>
-      <p class="title-sub">How to kickstart your content creation journey</p>
-      <div class="speaker">
-        <p class="speaker-name">Swaroop Talks</p>
-        <p class="speaker-role">TEDx Speaker · Associate Director of Content, SST · Creator &amp; Educator</p>
+      <div class="title-grid">
+        <div class="title-copy">
+          <p class="title-kicker">Personal branding session</p>
+          <h1 class="huge">From student<br>to creator.</h1>
+          <p class="title-sub">How to kickstart your content creation journey</p>
+          <div class="speaker">
+            <p class="speaker-name">Swaroop Talks</p>
+            <p class="speaker-role">TEDx Speaker · Associate Director of Content, SST · Creator &amp; Educator</p>
+          </div>
+          <p class="begin-hint"><b>→</b> PRESS NEXT TO BEGIN</p>
+        </div>
+        <div class="title-photo" id="titlePhoto">
+          <div class="photo-pending">PHOTO<br>PENDING</div>
+        </div>
       </div>
-      <p class="begin-hint"><b>→</b> PRESS NEXT TO BEGIN</p>
     </div>
   </section>
 
@@ -475,12 +506,13 @@
   <!-- 9 · YOU ALREADY HAVE ONE -->
   <section class="slide statement" data-act="ACT II">
     <div class="slide-in">
-      <h2 class="huge">You already have a personal brand.</h2>
-      <div class="namecheck">
-        <input id="nameInput" type="text" placeholder="Type your name" autocomplete="off" spellcheck="false" aria-label="Your name">
-        <button class="btn btn-amber" id="nameGo" type="button">Search it now →</button>
+      <h2 class="big">They will look you up before they ever meet you.</h2>
+      <div class="rungs">
+        <div class="rung"><b>A recruiter, before the interview</b><span>They open LinkedIn, not your resume</span></div>
+        <div class="rung"><b>A senior, before replying to you</b><span>Ten seconds deciding if you are worth the time</span></div>
+        <div class="rung"><b>A founder, before offering you anything</b><span>They want to see what you have actually done</span></div>
       </div>
-      <p class="namecheck-note">Whatever comes up, or does not, is your brand right now</p>
+      <p class="remember"><span class="lbl">Remember</span>Right now, what do they find? That is already your brand.</p>
     </div>
   </section>
 
@@ -523,19 +555,19 @@
   </section>
 
   <!-- ACT III OPENER · SKILLS -->
-  <section class="slide" data-act="ACT III">
+  <section class="slide" data-act="ACT III" data-auto="5000">
     <div class="slide-in">
       <p class="eyebrow">What you will learn</p>
       <h2 class="big">Eight skills, none of them on your resume.</h2>
       <div class="chips">
-        <span class="chip">Market Research</span>
-        <span class="chip">Copywriting</span>
-        <span class="chip">Content Creation</span>
-        <span class="chip">Communication</span>
-        <span class="chip">Design &amp; Editing</span>
-        <span class="chip">SEO</span>
-        <span class="chip">Marketing</span>
-        <span class="chip">Sales &amp; Offers</span>
+        <span class="chip" data-reveal>Market Research</span>
+        <span class="chip" data-reveal>Copywriting</span>
+        <span class="chip" data-reveal>Content Creation</span>
+        <span class="chip" data-reveal>Communication</span>
+        <span class="chip" data-reveal>Design &amp; Editing</span>
+        <span class="chip" data-reveal>SEO</span>
+        <span class="chip" data-reveal>Marketing</span>
+        <span class="chip" data-reveal>Sales &amp; Offers</span>
       </div>
       <p class="remember"><span class="lbl">Remember</span>You practise these weekly, for free, in public.</p>
     </div>
@@ -609,9 +641,9 @@
         <div class="phases">
         <div class="phase">
           <p class="phase-t">Set up</p>
-          <div class="step"><input type="checkbox" id="s1" data-step="s1"><label for="s1">Search your own name and screenshot what shows up</label></div>
+          <div class="step"><input type="checkbox" id="s1" data-step="s1"><label for="s1">Open your LinkedIn and read it like a stranger would</label></div>
           <div class="step"><input type="checkbox" id="s2" data-step="s2"><label for="s2">Decide the niche you can honestly speak on</label></div>
-          <div class="step"><input type="checkbox" id="s3" data-step="s3"><label for="s3">Pick one platform for 90 days</label></div>
+          <div class="step"><input type="checkbox" id="s3" data-step="s3"><label for="s3">Rewrite your LinkedIn headline and About section</label></div>
         </div>
 
         <div class="phase">
@@ -622,33 +654,29 @@
 
         <div class="phase">
           <p class="phase-t">Ship</p>
-          <div class="step"><input type="checkbox" id="s6" data-step="s6"><label for="s6">Publish your first video</label></div>
-          <div class="step"><input type="checkbox" id="s7" data-step="s7"><label for="s7">One video a week, no skipped weeks</label></div>
-          <div class="step"><input type="checkbox" id="s8" data-step="s8"><label for="s8">Review one metric weekly, improve one thing</label></div>
+          <div class="step"><input type="checkbox" id="s6" data-step="s6"><label for="s6">Publish your first LinkedIn post</label></div>
+          <div class="step"><input type="checkbox" id="s7" data-step="s7"><label for="s7">One post a week, no skipped weeks</label></div>
+          <div class="step"><input type="checkbox" id="s8" data-step="s8"><label for="s8">Post your Day 30 recap and tag Swaroop Talks on LinkedIn</label></div>
         </div>
         </div>
 
-        <p class="complete-msg" id="completeMsg"><b>Done.</b> You did the thing most people only bookmark. Tag <b>@codewithswaroop</b> and keep publishing.</p>
+        <p class="complete-msg" id="completeMsg"><b>Done.</b> You did the thing most people only bookmark. Tag <b>Swaroop Talks</b> on LinkedIn so I can see it.</p>
         <p class="tracker-foot">SAVED IN THIS BROWSER. BOOKMARK THIS PAGE AND COME BACK.</p>
       </div>
     </div>
   </section>
 
-  <!-- 17 · QR -->
+  <!-- 17 · ONE CTA -->
   <section class="slide" data-act="ACT III">
     <div class="slide-in">
-      <p class="eyebrow">Take these with you</p>
-      <h2 class="big">Two things before you leave.</h2>
-      <div class="qr-pair">
-        <div class="qr-item">
-          <div class="qr-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" shape-rendering="crispEdges" role="img" aria-label="Session website QR code"><rect width="37" height="37" fill="#F5F4F2"/><path d="M4 4h7v1h-7zM14 4h1v1h-1zM16 4h1v1h-1zM19 4h1v1h-1zM21 4h4v1h-4zM26 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM13 5h2v1h-2zM16 5h1v1h-1zM19 5h3v1h-3zM24 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h3v1h-3zM20 6h1v1h-1zM23 6h2v1h-2zM26 6h1v1h-1zM28 6h3v1h-3zM32 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM12 7h2v1h-2zM16 7h1v1h-1zM21 7h1v1h-1zM23 7h1v1h-1zM26 7h1v1h-1zM28 7h3v1h-3zM32 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM12 8h2v1h-2zM15 8h3v1h-3zM23 8h2v1h-2zM26 8h1v1h-1zM28 8h3v1h-3zM32 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h3v1h-3zM22 9h1v1h-1zM26 9h1v1h-1zM32 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h7v1h-7zM12 11h1v1h-1zM15 11h3v1h-3zM19 11h1v1h-1zM22 11h2v1h-2zM4 12h1v1h-1zM6 12h5v1h-5zM13 12h2v1h-2zM16 12h1v1h-1zM18 12h5v1h-5zM24 12h1v1h-1zM26 12h5v1h-5zM4 13h1v1h-1zM6 13h1v1h-1zM8 13h2v1h-2zM11 13h1v1h-1zM13 13h1v1h-1zM16 13h1v1h-1zM20 13h9v1h-9zM32 13h1v1h-1zM4 14h2v1h-2zM7 14h1v1h-1zM9 14h4v1h-4zM19 14h1v1h-1zM21 14h1v1h-1zM24 14h1v1h-1zM8 15h1v1h-1zM11 15h1v1h-1zM13 15h4v1h-4zM18 15h2v1h-2zM22 15h1v1h-1zM25 15h1v1h-1zM27 15h1v1h-1zM29 15h1v1h-1zM31 15h1v1h-1zM7 16h1v1h-1zM10 16h1v1h-1zM12 16h1v1h-1zM15 16h1v1h-1zM19 16h3v1h-3zM29 16h2v1h-2zM5 17h2v1h-2zM9 17h1v1h-1zM11 17h4v1h-4zM16 17h3v1h-3zM20 17h1v1h-1zM23 17h2v1h-2zM26 17h3v1h-3zM32 17h1v1h-1zM6 18h3v1h-3zM10 18h1v1h-1zM12 18h1v1h-1zM14 18h1v1h-1zM16 18h6v1h-6zM24 18h1v1h-1zM27 18h4v1h-4zM4 19h1v1h-1zM8 19h2v1h-2zM13 19h2v1h-2zM17 19h1v1h-1zM19 19h1v1h-1zM22 19h3v1h-3zM26 19h1v1h-1zM28 19h1v1h-1zM31 19h1v1h-1zM7 20h5v1h-5zM14 20h1v1h-1zM18 20h2v1h-2zM21 20h1v1h-1zM24 20h1v1h-1zM29 20h2v1h-2zM4 21h1v1h-1zM6 21h2v1h-2zM9 21h1v1h-1zM11 21h2v1h-2zM14 21h1v1h-1zM20 21h1v1h-1zM22 21h7v1h-7zM30 21h1v1h-1zM32 21h1v1h-1zM4 22h1v1h-1zM8 22h1v1h-1zM10 22h1v1h-1zM12 22h3v1h-3zM19 22h1v1h-1zM24 22h3v1h-3zM30 22h1v1h-1zM4 23h1v1h-1zM6 23h2v1h-2zM9 23h1v1h-1zM12 23h2v1h-2zM16 23h1v1h-1zM18 23h1v1h-1zM20 23h1v1h-1zM23 23h1v1h-1zM28 23h1v1h-1zM31 23h1v1h-1zM4 24h1v1h-1zM7 24h1v1h-1zM10 24h1v1h-1zM12 24h1v1h-1zM14 24h2v1h-2zM21 24h1v1h-1zM24 24h5v1h-5zM30 24h3v1h-3zM12 25h2v1h-2zM15 25h4v1h-4zM23 25h2v1h-2zM28 25h5v1h-5zM4 26h7v1h-7zM14 26h2v1h-2zM17 26h3v1h-3zM21 26h4v1h-4zM26 26h1v1h-1zM28 26h3v1h-3zM4 27h1v1h-1zM10 27h1v1h-1zM12 27h1v1h-1zM14 27h4v1h-4zM19 27h2v1h-2zM22 27h3v1h-3zM28 27h1v1h-1zM31 27h1v1h-1zM4 28h1v1h-1zM6 28h3v1h-3zM10 28h1v1h-1zM12 28h1v1h-1zM14 28h2v1h-2zM18 28h1v1h-1zM21 28h1v1h-1zM24 28h5v1h-5zM30 28h1v1h-1zM4 29h1v1h-1zM6 29h3v1h-3zM10 29h1v1h-1zM12 29h5v1h-5zM20 29h1v1h-1zM22 29h1v1h-1zM27 29h1v1h-1zM29 29h4v1h-4zM4 30h1v1h-1zM6 30h3v1h-3zM10 30h1v1h-1zM12 30h1v1h-1zM15 30h1v1h-1zM18 30h5v1h-5zM24 30h1v1h-1zM26 30h6v1h-6zM4 31h1v1h-1zM10 31h1v1h-1zM14 31h1v1h-1zM19 31h2v1h-2zM24 31h1v1h-1zM29 31h1v1h-1zM31 31h1v1h-1zM4 32h7v1h-7zM12 32h3v1h-3zM16 32h2v1h-2zM19 32h1v1h-1zM21 32h1v1h-1zM23 32h1v1h-1zM25 32h1v1h-1zM28 32h1v1h-1zM30 32h1v1h-1z" fill="#0A0A0B"/></svg></div>
-          <p class="qr-title">This deck &amp; your roadmap</p>
-          <p class="qr-url">brandwithswaroop.vercel.app</p>
-        </div>
-        <div class="qr-item">
-          <div class="qr-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" shape-rendering="crispEdges" role="img" aria-label="WhatsApp group QR code"><rect width="41" height="41" fill="#F5F4F2"/><path d="M4 4h7v1h-7zM12 4h6v1h-6zM20 4h3v1h-3zM24 4h2v1h-2zM30 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM17 5h2v1h-2zM23 5h4v1h-4zM28 5h1v1h-1zM30 5h1v1h-1zM36 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM12 6h2v1h-2zM15 6h1v1h-1zM17 6h4v1h-4zM23 6h1v1h-1zM25 6h3v1h-3zM30 6h1v1h-1zM32 6h3v1h-3zM36 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM13 7h1v1h-1zM15 7h2v1h-2zM18 7h5v1h-5zM24 7h2v1h-2zM27 7h2v1h-2zM30 7h1v1h-1zM32 7h3v1h-3zM36 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM12 8h1v1h-1zM15 8h2v1h-2zM19 8h2v1h-2zM23 8h1v1h-1zM25 8h1v1h-1zM27 8h1v1h-1zM30 8h1v1h-1zM32 8h3v1h-3zM36 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM14 9h1v1h-1zM16 9h5v1h-5zM25 9h1v1h-1zM27 9h1v1h-1zM30 9h1v1h-1zM36 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h7v1h-7zM13 11h1v1h-1zM15 11h3v1h-3zM19 11h2v1h-2zM22 11h2v1h-2zM26 11h1v1h-1zM28 11h1v1h-1zM4 12h1v1h-1zM7 12h6v1h-6zM15 12h2v1h-2zM18 12h1v1h-1zM21 12h1v1h-1zM23 12h2v1h-2zM27 12h3v1h-3zM32 12h1v1h-1zM34 12h3v1h-3zM4 13h4v1h-4zM14 13h4v1h-4zM21 13h3v1h-3zM25 13h4v1h-4zM32 13h4v1h-4zM5 14h3v1h-3zM9 14h2v1h-2zM12 14h1v1h-1zM15 14h1v1h-1zM17 14h1v1h-1zM19 14h1v1h-1zM21 14h1v1h-1zM24 14h1v1h-1zM26 14h5v1h-5zM32 14h5v1h-5zM16 15h2v1h-2zM19 15h1v1h-1zM21 15h1v1h-1zM26 15h2v1h-2zM30 15h2v1h-2zM34 15h3v1h-3zM5 16h6v1h-6zM12 16h1v1h-1zM16 16h2v1h-2zM19 16h2v1h-2zM23 16h3v1h-3zM27 16h2v1h-2zM30 16h1v1h-1zM36 16h1v1h-1zM4 17h1v1h-1zM9 17h1v1h-1zM12 17h2v1h-2zM15 17h1v1h-1zM17 17h2v1h-2zM22 17h1v1h-1zM25 17h1v1h-1zM31 17h1v1h-1zM5 18h2v1h-2zM8 18h5v1h-5zM14 18h1v1h-1zM18 18h9v1h-9zM28 18h1v1h-1zM30 18h2v1h-2zM34 18h1v1h-1zM4 19h2v1h-2zM9 19h1v1h-1zM12 19h3v1h-3zM18 19h1v1h-1zM20 19h1v1h-1zM23 19h1v1h-1zM26 19h1v1h-1zM29 19h1v1h-1zM32 19h3v1h-3zM36 19h1v1h-1zM4 20h2v1h-2zM7 20h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM14 20h2v1h-2zM19 20h1v1h-1zM23 20h1v1h-1zM26 20h2v1h-2zM29 20h5v1h-5zM5 21h1v1h-1zM9 21h1v1h-1zM12 21h1v1h-1zM14 21h3v1h-3zM19 21h1v1h-1zM21 21h6v1h-6zM30 21h1v1h-1zM32 21h1v1h-1zM34 21h2v1h-2zM6 22h7v1h-7zM15 22h6v1h-6zM23 22h1v1h-1zM26 22h2v1h-2zM29 22h3v1h-3zM33 22h2v1h-2zM36 22h1v1h-1zM4 23h1v1h-1zM6 23h1v1h-1zM12 23h3v1h-3zM18 23h3v1h-3zM23 23h2v1h-2zM26 23h1v1h-1zM28 23h1v1h-1zM32 23h4v1h-4zM4 24h1v1h-1zM9 24h2v1h-2zM14 24h3v1h-3zM18 24h4v1h-4zM23 24h1v1h-1zM25 24h1v1h-1zM28 24h1v1h-1zM31 24h3v1h-3zM35 24h1v1h-1zM4 25h1v1h-1zM12 25h1v1h-1zM15 25h3v1h-3zM20 25h4v1h-4zM26 25h1v1h-1zM30 25h5v1h-5zM4 26h1v1h-1zM6 26h1v1h-1zM9 26h2v1h-2zM12 26h5v1h-5zM18 26h2v1h-2zM25 26h1v1h-1zM27 26h1v1h-1zM30 26h3v1h-3zM35 26h2v1h-2zM4 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM12 27h2v1h-2zM15 27h3v1h-3zM21 27h1v1h-1zM24 27h1v1h-1zM27 27h4v1h-4zM32 27h1v1h-1zM34 27h1v1h-1zM36 27h1v1h-1zM4 28h2v1h-2zM8 28h1v1h-1zM10 28h1v1h-1zM12 28h2v1h-2zM15 28h1v1h-1zM18 28h3v1h-3zM24 28h1v1h-1zM27 28h6v1h-6zM35 28h1v1h-1zM12 29h1v1h-1zM17 29h1v1h-1zM20 29h3v1h-3zM26 29h1v1h-1zM28 29h1v1h-1zM32 29h1v1h-1zM34 29h1v1h-1zM4 30h7v1h-7zM12 30h1v1h-1zM14 30h1v1h-1zM16 30h1v1h-1zM19 30h1v1h-1zM22 30h4v1h-4zM27 30h2v1h-2zM30 30h1v1h-1zM32 30h1v1h-1zM34 30h1v1h-1zM4 31h1v1h-1zM10 31h1v1h-1zM12 31h5v1h-5zM19 31h1v1h-1zM23 31h2v1h-2zM27 31h2v1h-2zM32 31h5v1h-5zM4 32h1v1h-1zM6 32h3v1h-3zM10 32h1v1h-1zM12 32h3v1h-3zM18 32h1v1h-1zM20 32h2v1h-2zM24 32h1v1h-1zM27 32h6v1h-6zM36 32h1v1h-1zM4 33h1v1h-1zM6 33h3v1h-3zM10 33h1v1h-1zM12 33h3v1h-3zM16 33h1v1h-1zM19 33h1v1h-1zM23 33h2v1h-2zM27 33h3v1h-3zM31 33h1v1h-1zM33 33h4v1h-4zM4 34h1v1h-1zM6 34h3v1h-3zM10 34h1v1h-1zM13 34h1v1h-1zM18 34h2v1h-2zM21 34h1v1h-1zM23 34h1v1h-1zM25 34h1v1h-1zM27 34h1v1h-1zM29 34h1v1h-1zM31 34h3v1h-3zM35 34h2v1h-2zM4 35h1v1h-1zM10 35h1v1h-1zM15 35h2v1h-2zM18 35h3v1h-3zM31 35h6v1h-6zM4 36h7v1h-7zM12 36h1v1h-1zM14 36h1v1h-1zM18 36h1v1h-1zM20 36h3v1h-3zM24 36h1v1h-1zM27 36h7v1h-7z" fill="#0A0A0B"/></svg></div>
-          <p class="qr-title">The WhatsApp group</p>
-          <p class="qr-url"><a href="https://chat.whatsapp.com/FfX7qrWxgrrBvsNaDIFnKE?mode=gi_t" target="_blank" rel="noopener" id="waLink">Tap to join</a></p>
+      <p class="eyebrow">One thing before you leave</p>
+      <h2 class="big">Join the group. Post tonight.</h2>
+      <div class="cta-solo">
+        <div class="qr-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" shape-rendering="crispEdges" role="img" aria-label="WhatsApp group QR code"><rect width="41" height="41" fill="#F5F4F2"/><path d="M4 4h7v1h-7zM12 4h6v1h-6zM20 4h3v1h-3zM24 4h2v1h-2zM30 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM17 5h2v1h-2zM23 5h4v1h-4zM28 5h1v1h-1zM30 5h1v1h-1zM36 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM12 6h2v1h-2zM15 6h1v1h-1zM17 6h4v1h-4zM23 6h1v1h-1zM25 6h3v1h-3zM30 6h1v1h-1zM32 6h3v1h-3zM36 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM13 7h1v1h-1zM15 7h2v1h-2zM18 7h5v1h-5zM24 7h2v1h-2zM27 7h2v1h-2zM30 7h1v1h-1zM32 7h3v1h-3zM36 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM12 8h1v1h-1zM15 8h2v1h-2zM19 8h2v1h-2zM23 8h1v1h-1zM25 8h1v1h-1zM27 8h1v1h-1zM30 8h1v1h-1zM32 8h3v1h-3zM36 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM14 9h1v1h-1zM16 9h5v1h-5zM25 9h1v1h-1zM27 9h1v1h-1zM30 9h1v1h-1zM36 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h7v1h-7zM13 11h1v1h-1zM15 11h3v1h-3zM19 11h2v1h-2zM22 11h2v1h-2zM26 11h1v1h-1zM28 11h1v1h-1zM4 12h1v1h-1zM7 12h6v1h-6zM15 12h2v1h-2zM18 12h1v1h-1zM21 12h1v1h-1zM23 12h2v1h-2zM27 12h3v1h-3zM32 12h1v1h-1zM34 12h3v1h-3zM4 13h4v1h-4zM14 13h4v1h-4zM21 13h3v1h-3zM25 13h4v1h-4zM32 13h4v1h-4zM5 14h3v1h-3zM9 14h2v1h-2zM12 14h1v1h-1zM15 14h1v1h-1zM17 14h1v1h-1zM19 14h1v1h-1zM21 14h1v1h-1zM24 14h1v1h-1zM26 14h5v1h-5zM32 14h5v1h-5zM16 15h2v1h-2zM19 15h1v1h-1zM21 15h1v1h-1zM26 15h2v1h-2zM30 15h2v1h-2zM34 15h3v1h-3zM5 16h6v1h-6zM12 16h1v1h-1zM16 16h2v1h-2zM19 16h2v1h-2zM23 16h3v1h-3zM27 16h2v1h-2zM30 16h1v1h-1zM36 16h1v1h-1zM4 17h1v1h-1zM9 17h1v1h-1zM12 17h2v1h-2zM15 17h1v1h-1zM17 17h2v1h-2zM22 17h1v1h-1zM25 17h1v1h-1zM31 17h1v1h-1zM5 18h2v1h-2zM8 18h5v1h-5zM14 18h1v1h-1zM18 18h9v1h-9zM28 18h1v1h-1zM30 18h2v1h-2zM34 18h1v1h-1zM4 19h2v1h-2zM9 19h1v1h-1zM12 19h3v1h-3zM18 19h1v1h-1zM20 19h1v1h-1zM23 19h1v1h-1zM26 19h1v1h-1zM29 19h1v1h-1zM32 19h3v1h-3zM36 19h1v1h-1zM4 20h2v1h-2zM7 20h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM14 20h2v1h-2zM19 20h1v1h-1zM23 20h1v1h-1zM26 20h2v1h-2zM29 20h5v1h-5zM5 21h1v1h-1zM9 21h1v1h-1zM12 21h1v1h-1zM14 21h3v1h-3zM19 21h1v1h-1zM21 21h6v1h-6zM30 21h1v1h-1zM32 21h1v1h-1zM34 21h2v1h-2zM6 22h7v1h-7zM15 22h6v1h-6zM23 22h1v1h-1zM26 22h2v1h-2zM29 22h3v1h-3zM33 22h2v1h-2zM36 22h1v1h-1zM4 23h1v1h-1zM6 23h1v1h-1zM12 23h3v1h-3zM18 23h3v1h-3zM23 23h2v1h-2zM26 23h1v1h-1zM28 23h1v1h-1zM32 23h4v1h-4zM4 24h1v1h-1zM9 24h2v1h-2zM14 24h3v1h-3zM18 24h4v1h-4zM23 24h1v1h-1zM25 24h1v1h-1zM28 24h1v1h-1zM31 24h3v1h-3zM35 24h1v1h-1zM4 25h1v1h-1zM12 25h1v1h-1zM15 25h3v1h-3zM20 25h4v1h-4zM26 25h1v1h-1zM30 25h5v1h-5zM4 26h1v1h-1zM6 26h1v1h-1zM9 26h2v1h-2zM12 26h5v1h-5zM18 26h2v1h-2zM25 26h1v1h-1zM27 26h1v1h-1zM30 26h3v1h-3zM35 26h2v1h-2zM4 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM12 27h2v1h-2zM15 27h3v1h-3zM21 27h1v1h-1zM24 27h1v1h-1zM27 27h4v1h-4zM32 27h1v1h-1zM34 27h1v1h-1zM36 27h1v1h-1zM4 28h2v1h-2zM8 28h1v1h-1zM10 28h1v1h-1zM12 28h2v1h-2zM15 28h1v1h-1zM18 28h3v1h-3zM24 28h1v1h-1zM27 28h6v1h-6zM35 28h1v1h-1zM12 29h1v1h-1zM17 29h1v1h-1zM20 29h3v1h-3zM26 29h1v1h-1zM28 29h1v1h-1zM32 29h1v1h-1zM34 29h1v1h-1zM4 30h7v1h-7zM12 30h1v1h-1zM14 30h1v1h-1zM16 30h1v1h-1zM19 30h1v1h-1zM22 30h4v1h-4zM27 30h2v1h-2zM30 30h1v1h-1zM32 30h1v1h-1zM34 30h1v1h-1zM4 31h1v1h-1zM10 31h1v1h-1zM12 31h5v1h-5zM19 31h1v1h-1zM23 31h2v1h-2zM27 31h2v1h-2zM32 31h5v1h-5zM4 32h1v1h-1zM6 32h3v1h-3zM10 32h1v1h-1zM12 32h3v1h-3zM18 32h1v1h-1zM20 32h2v1h-2zM24 32h1v1h-1zM27 32h6v1h-6zM36 32h1v1h-1zM4 33h1v1h-1zM6 33h3v1h-3zM10 33h1v1h-1zM12 33h3v1h-3zM16 33h1v1h-1zM19 33h1v1h-1zM23 33h2v1h-2zM27 33h3v1h-3zM31 33h1v1h-1zM33 33h4v1h-4zM4 34h1v1h-1zM6 34h3v1h-3zM10 34h1v1h-1zM13 34h1v1h-1zM18 34h2v1h-2zM21 34h1v1h-1zM23 34h1v1h-1zM25 34h1v1h-1zM27 34h1v1h-1zM29 34h1v1h-1zM31 34h3v1h-3zM35 34h2v1h-2zM4 35h1v1h-1zM10 35h1v1h-1zM15 35h2v1h-2zM18 35h3v1h-3zM31 35h6v1h-6zM4 36h7v1h-7zM12 36h1v1h-1zM14 36h1v1h-1zM18 36h1v1h-1zM20 36h3v1h-3zM24 36h1v1h-1zM27 36h7v1h-7z" fill="#0A0A0B"/></svg></div>
+        <div class="cta-copy">
+          <h3>The WhatsApp group</h3>
+          <p>Ask questions, share your first post, get feedback as you go. This is not a one time session.</p>
+          <p class="pin">This deck and your roadmap are pinned inside the group</p>
         </div>
       </div>
     </div>
@@ -761,7 +789,22 @@
     }
     return false;
   }
-  function goNext(){ if(!stepReveal()) show(cur + 1); }
+  var autoTimer = null;
+  function clearAuto(){ if(autoTimer){ clearInterval(autoTimer); autoTimer = null; } }
+  function startAuto(slide){
+    clearAuto();
+    var ms = parseInt(slide.getAttribute("data-auto"), 10);
+    if(!ms || revealIdx >= reveals.length) return;
+    autoTimer = setInterval(function(){ if(!stepReveal()) clearAuto(); }, ms);
+  }
+  function goNext(){
+    if(stepReveal()){
+      if(autoTimer) startAuto(slides[cur]);   // keep the gaps even after a manual nudge
+      return;
+    }
+    clearAuto();
+    show(cur + 1);
+  }
   function goPrev(){ show(cur - 1, false, true); }
   totSlide.textContent = pad(N);
 
@@ -776,7 +819,9 @@
     deckBar.style.width = (N > 1 ? (cur / (N - 1)) * 100 : 100) + "%";
     curSlide.textContent = pad(cur + 1);
     actLabel.textContent = s.getAttribute("data-act") || "";
+    clearAuto();
     collectReveals(s, !!showAll);
+    if(!showAll) startAuto(s);
     prevBtn.disabled = cur === 0;
     nextBtn.disabled = (cur === N - 1) && revealIdx >= reveals.length;
     if(!skipSave){ state.slide = cur; save(state); }
@@ -900,18 +945,5 @@
   else if(typeof state.slide === "number" && state.slide >= 0 && state.slide < N) initial = state.slide;
   slides[0].classList.add("active");
   show(initial, true, true);
-
-  /* ---------- search your own name ---------- */
-  var nameInput = document.getElementById("nameInput");
-  var nameGo = document.getElementById("nameGo");
-  function runNameSearch(){
-    var q = (nameInput.value || "").trim();
-    if(!q) { nameInput.focus(); return; }
-    window.open("https://www.google.com/search?q=" + encodeURIComponent('"' + q + '"'), "_blank", "noopener");
-  }
-  nameGo.addEventListener("click", runNameSearch);
-  nameInput.addEventListener("keydown", function(e){
-    if(e.key === "Enter"){ e.preventDefault(); runNameSearch(); }
-  });
 })();
 </script>
