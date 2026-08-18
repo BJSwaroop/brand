@@ -702,7 +702,7 @@
 <script>
 (function(){
   "use strict";
-  var KEY = "pb30_v1";
+  var KEY = "pb30_v2";
   var mem = {};
   function load(){
     try{ var raw = window.localStorage.getItem(KEY); return raw ? JSON.parse(raw) : {}; }
@@ -711,6 +711,16 @@
   function save(state){
     mem = state;
     try{ window.localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  // ?reset  ->  wipe everything and start fresh
+  if(/[?&#]reset\b/.test(location.search + location.hash)){
+    try{
+      window.localStorage.removeItem(KEY);
+      window.localStorage.removeItem("pb30_v1");
+    }catch(e){}
+    location.replace(location.pathname);
+    return;
   }
 
   var state = load();
