@@ -1,0 +1,703 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Build a Brand Before You Need One</title>
+<style>
+  :root{
+    --ink:#0A0A0B;
+    --panel:#141416;
+    --panel-2:#1B1B1E;
+    --line:#28282C;
+    --text:#F5F4F2;
+    --muted:#8F8F94;
+    --faint:#68686C;
+    --amber:#F2A93B;
+    --amber-deep:#C97F1E;
+    --live:#E4574C;
+    --go:#8FBF9A;
+    --on-amber:#170F02;
+    --font-display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono","Liberation Mono",monospace;
+    --chrome-h:49px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:16px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  a{color:var(--amber);text-decoration:none}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:2px}
+
+  /* ---------- chrome ---------- */
+  .chrome{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--ink);border-bottom:1px solid var(--line)}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 22px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;color:var(--text);white-space:nowrap;min-width:0;flex:1 1 auto;overflow:hidden}
+  .brand-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--live);animation:pulse 1.6s ease-in-out infinite;flex:none}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .bar-meta{display:flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.1em;color:var(--faint);white-space:nowrap;flex:none}
+  .bar-meta .act-label{color:var(--amber)}
+  .day-chip{
+    display:none;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.06em;
+    color:var(--on-amber);background:var(--amber);border-radius:2px;padding:3px 11px;font-weight:700;white-space:nowrap;
+  }
+  .day-chip.on{display:inline-block}
+  .progress{height:3px;background:var(--line)}
+  .progress i{display:block;height:100%;width:0%;background:var(--amber);transition:width .35s ease}
+  @media (max-width:560px){
+    .live-label{display:none}
+    .topbar{padding:12px 16px;gap:10px}
+    .bar-meta{gap:10px}
+    .bar-meta .counter-label{display:none}
+    .brand-text{max-width:112px}
+  }
+  @media (max-width:400px){
+    .day-chip{padding:3px 8px;font-size:10px}
+    .brand-text{max-width:88px}
+  }
+
+  /* ---------- deck ---------- */
+  .deck{position:fixed;top:var(--chrome-h);bottom:0;left:0;right:0}
+  .slide{position:absolute;inset:0;display:none;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--ink)}
+  .slide.active{display:flex;flex-direction:column}
+  .slide-in{margin:auto;width:100%;max-width:960px;padding:40px 28px 120px;animation:arrive .4s ease both}
+  @keyframes arrive{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important}}
+
+  /* ---------- nav ---------- */
+  .scrim{
+    position:fixed;left:0;right:0;bottom:0;height:104px;z-index:55;pointer-events:none;
+    background:linear-gradient(to top, var(--ink) 34%, rgba(10,10,11,.86) 62%, rgba(10,10,11,0));
+  }
+  .navs{position:fixed;right:20px;bottom:20px;z-index:60;display:flex;gap:10px}
+  .navbtn{
+    width:50px;height:50px;border-radius:3px;border:1px solid var(--line);
+    background:var(--ink);color:var(--text);cursor:pointer;font-size:19px;
+    display:grid;place-content:center;transition:border-color .15s ease,color .15s ease,opacity .15s ease;
+  }
+  .navbtn:hover{border-color:var(--amber);color:var(--amber)}
+  .navbtn.primary{background:var(--amber);color:var(--on-amber);border-color:var(--amber);font-weight:700}
+  .navbtn.primary:hover{background:#FFC15A}
+  .navbtn[disabled]{opacity:.25;cursor:default;pointer-events:none}
+  .key-hint{position:fixed;left:22px;bottom:34px;z-index:60;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--faint)}
+  @media (max-width:720px){.key-hint{display:none}}
+
+  /* ---------- type ---------- */
+  .eyebrow{
+    position:relative;padding-left:32px;
+    font-family:var(--font-mono);font-size:12px;letter-spacing:.18em;color:var(--muted);
+    text-transform:uppercase;margin-bottom:26px;
+  }
+  .eyebrow::before{content:"";position:absolute;left:0;top:.55em;width:22px;height:1px;background:var(--amber)}
+  .huge{
+    font-family:var(--font-display);font-weight:900;letter-spacing:-.03em;line-height:1.0;
+    font-size:clamp(40px,7vw,78px);text-wrap:balance;
+  }
+  .huge em{font-style:normal;color:var(--amber)}
+  .big{
+    font-family:var(--font-display);font-weight:900;letter-spacing:-.022em;line-height:1.08;
+    font-size:clamp(28px,4.4vw,46px);text-wrap:balance;
+  }
+  .sub{margin-top:22px;max-width:52ch;font-size:16.5px;color:var(--muted)}
+  .sub strong{color:var(--text);font-weight:600}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:var(--font-display);font-weight:700;font-size:15px;
+    padding:13px 24px;border-radius:2px;cursor:pointer;border:1px solid var(--line);
+    transition:border-color .15s ease,background .15s ease,color .15s ease;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-amber{background:var(--amber);color:var(--on-amber);border-color:var(--amber)}
+  .btn-amber:hover{background:#FFC15A}
+  .btn-ghost{background:transparent;color:var(--text)}
+  .btn-ghost:hover{border-color:var(--amber);color:var(--amber)}
+
+  /* title */
+  .act-strip{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:38px}
+  .act-strip span{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.04em;color:var(--muted)}
+  .act-strip b{color:var(--amber);margin-right:8px;letter-spacing:.14em;text-transform:uppercase;font-size:11px}
+  .host-line{margin-top:38px;padding-top:22px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--faint);line-height:1.9}
+  .host-line b{color:var(--muted);font-weight:600}
+  .begin-hint{margin-top:22px;font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;color:var(--faint)}
+  .begin-hint b{color:var(--amber)}
+
+  /* statement slides: the breathing room */
+  .statement .slide-in{max-width:900px}
+  .statement .huge{font-size:clamp(42px,8vw,88px)}
+  .stmt-note{margin-top:30px;padding-top:22px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:12.5px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+
+  .try{margin-top:26px;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:13px;color:var(--amber)}
+  .try::before{content:"→"}
+
+  /* stats */
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:34px;padding-top:26px;border-top:1px solid var(--line)}
+  .stat b{display:block;font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:clamp(20px,2.8vw,30px);font-weight:900;color:var(--text)}
+  .stat span{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--faint);text-transform:uppercase}
+  @media (max-width:720px){.stat-row{grid-template-columns:repeat(2,1fr);gap:20px}}
+
+  /* screenshot */
+  .shot{
+    margin-top:30px;border:1.5px dashed var(--line);border-radius:3px;min-height:240px;
+    display:flex;align-items:center;justify-content:center;background:var(--panel);color:var(--faint);
+    font-family:var(--font-mono);font-size:12.5px;letter-spacing:.06em;text-align:center;padding:20px;
+  }
+  .shot img{max-width:100%;border-radius:2px;display:block}
+
+  /* tags */
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+  .chip{font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;border:1px solid var(--line);border-radius:2px;padding:9px 15px;color:var(--muted)}
+
+  /* numbered rows: the workhorse */
+  .rungs{margin-top:34px;counter-reset:rung}
+  .rung{counter-increment:rung;display:flex;gap:20px;align-items:flex-start;padding:17px 0;border-bottom:1px solid var(--line)}
+  .rung:last-child{border-bottom:0}
+  .rung::before{
+    content:counter(rung,decimal-leading-zero);flex:none;width:34px;height:34px;
+    border:1px solid var(--line);border-radius:3px;display:grid;place-content:center;
+    font-family:var(--font-mono);font-size:12px;color:var(--faint);
+  }
+  .rung b{font-family:var(--font-display);font-weight:700;font-size:16px;min-width:250px;padding-top:5px}
+  .rung span{color:var(--muted);font-size:14.5px;padding-top:5px}
+  @media (max-width:720px){.rung{flex-direction:column;gap:8px}.rung b{min-width:0;padding-top:0}.rung span{padding-top:0}}
+
+  /* remember bar */
+  .remember{margin-top:30px;background:var(--amber);color:var(--on-amber);border-radius:2px;padding:17px 20px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;font-size:15px;font-weight:500}
+  .remember .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.6;flex:none}
+
+  /* formula */
+  .formula{margin-top:14px;font-family:var(--font-display);font-weight:900;letter-spacing:-.02em;font-size:clamp(20px,5vw,48px);line-height:1.3}
+  .formula .x,.formula .eq{color:var(--faint);font-weight:400}
+
+  /* platform picker */
+  .platforms{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+  .platform{position:relative}
+  .platform input{position:absolute;opacity:0;pointer-events:none}
+  .platform label{display:block;border:1px solid var(--line);border-radius:3px;padding:22px;cursor:pointer;transition:border-color .15s ease;height:100%}
+  .platform label:hover{border-color:var(--amber-deep)}
+  .platform input:checked+label{border-color:var(--amber)}
+  .platform input:focus-visible+label{outline:2px solid var(--amber);outline-offset:3px}
+  .platform .p-name{font-family:var(--font-display);font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:space-between}
+  .platform .p-role{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:var(--amber);text-transform:uppercase;margin-top:5px;display:block}
+  .platform .tick{width:17px;height:17px;border-radius:2px;border:1.5px solid var(--faint);display:inline-block;position:relative;flex:none}
+  .platform input:checked+label .tick{border-color:var(--amber);background:var(--amber)}
+  .platform input:checked+label .tick::after{
+    content:"";position:absolute;inset:0;
+    background:no-repeat center/9px url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path d="M2 6.5 5 9l5-6" fill="none" stroke="%23170F02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  }
+  @media (max-width:760px){.platforms{grid-template-columns:1fr;gap:12px}}
+
+  /* tracker */
+  .tracker{margin-top:32px;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .tracker-head{
+    padding:22px 26px;border-bottom:1px solid var(--line);
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;
+    background:var(--panel-2);
+  }
+  .tracker-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .prog-num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:14px;color:var(--text)}
+  .prog-num b{color:var(--amber);font-size:20px}
+  .tbar{width:150px;height:5px;background:var(--line);border-radius:999px;overflow:hidden}
+  .tbar i{display:block;height:100%;width:0%;background:var(--amber);border-radius:999px;transition:width .35s ease}
+  .start-wrap{padding:18px 26px;border-bottom:1px solid var(--line)}
+  .start-note{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+  .day-count{display:none;font-family:var(--font-mono);font-size:13px;color:var(--text)}
+  .day-count b{color:var(--amber);font-size:18px}
+  .phase{padding:20px 26px;border-bottom:1px solid var(--line)}
+  .phase:last-of-type{border-bottom:0}
+  .phase-t{margin-bottom:8px;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}
+  .step{display:flex;gap:14px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed var(--line)}
+  .step:last-child{border-bottom:0}
+  .step input{
+    appearance:none;-webkit-appearance:none;flex:none;width:21px;height:21px;margin-top:2px;
+    border:1.5px solid var(--faint);border-radius:2px;background:transparent;cursor:pointer;
+    display:inline-grid;place-content:center;transition:background .15s ease,border-color .15s ease;
+  }
+  .step input:checked{background:var(--go);border-color:var(--go)}
+  .step input:checked::after{
+    content:"";width:12px;height:12px;
+    background:no-repeat center/12px url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path d="M2 6.5 5 9l5-6" fill="none" stroke="%230A0A0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  }
+  .step input:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+  .step label{cursor:pointer;font-size:15px;color:var(--text)}
+  .step.done label{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--faint)}
+  .complete-msg{display:none;margin:16px 26px 22px;padding:16px 20px;border:1px solid var(--go);border-radius:3px;font-size:14.5px}
+  .complete-msg.on{display:block}
+  .complete-msg b{color:var(--go)}
+  .tracker-foot{padding:14px 26px;background:var(--amber);color:var(--on-amber);font-family:var(--font-mono);font-size:11px;letter-spacing:.05em}
+
+  /* support: QR pair */
+  .qr-pair{margin-top:34px;display:flex;flex-wrap:wrap;gap:40px}
+  .qr-item{max-width:220px}
+  .qr-box{width:150px;height:150px;background:#F5F4F2;border-radius:3px;padding:0;overflow:hidden}
+  .qr-box svg{display:block;width:100%;height:100%}
+  .qr-title{margin-top:14px;font-family:var(--font-display);font-weight:700;font-size:15.5px;color:var(--text)}
+  .qr-url{margin-top:3px;font-family:var(--font-mono);font-size:12px;color:var(--faint);word-break:break-all}
+  .qr-url a{color:var(--amber)}
+  @media (max-width:560px){.qr-pair{gap:30px}.qr-box{width:132px;height:132px}}
+
+  /* closing URL */
+  .close-url{
+    margin-top:28px;display:inline-block;font-family:var(--font-mono);font-size:clamp(13px,2vw,17px);
+    letter-spacing:.04em;color:var(--on-amber);background:var(--amber);padding:10px 16px;border-radius:2px;
+  }
+
+  /* finale */
+  .meta-row{margin-top:36px;padding-top:22px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px 6px;font-family:var(--font-mono);font-size:12px;letter-spacing:.06em}
+  .meta-row a{color:var(--muted);transition:color .15s ease}
+  .meta-row a:hover{color:var(--amber)}
+  .meta-row .sep{color:var(--line)}
+</style>
+
+<div class="chrome">
+  <div class="topbar">
+    <span class="brand"><span class="dot" aria-hidden="true"></span><span class="brand-text">SWAROOP&nbsp;TALKS<span class="live-label">&nbsp;· LIVE&nbsp;SESSION</span></span></span>
+    <span class="bar-meta">
+      <span class="act-label" id="actLabel">TITLE</span>
+      <span id="counter"><span class="counter-label">SLIDE </span><span id="curSlide">01</span>/<span id="totSlide">00</span></span>
+      <span class="day-chip" id="navDay"></span>
+    </span>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="deckBar"></i></div>
+</div>
+
+<main class="deck" id="deck">
+
+  <!-- 1 · TITLE -->
+  <section class="slide" data-act="TITLE">
+    <div class="slide-in">
+      <p class="eyebrow">Personal branding · 30 minutes</p>
+      <h1 class="huge">Build a brand <em>before</em> you need one.</h1>
+      <div class="act-strip">
+        <span><b>Act I</b>What content did for me</span>
+        <span><b>Act II</b>Why it matters for you</span>
+        <span><b>Act III</b>How to start</span>
+      </div>
+      <p class="host-line">SWAROOP · CONTENT &amp; BRAND HEAD, SCALER SCHOOL OF TECHNOLOGY · FOUNDER, MENTIBY</p>
+      <p class="begin-hint"><b>→</b> PRESS NEXT TO BEGIN</p>
+    </div>
+  </section>
+
+  <!-- 2 · THE OPENING QUESTION -->
+  <section class="slide statement" data-act="ACT I">
+    <div class="slide-in">
+      <p class="eyebrow">Before we start</p>
+      <h2 class="huge">What's stopping you?</h2>
+      <div class="chips">
+        <span class="chip">No niche yet</span>
+        <span class="chip">Nothing worth saying</span>
+        <span class="chip">What if nobody watches</span>
+        <span class="chip">No equipment</span>
+        <span class="chip">Not confident on camera</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · THE PROOF -->
+  <section class="slide" data-act="ACT I">
+    <div class="slide-in">
+      <p class="eyebrow">What it turned into</p>
+      <h2 class="big">One channel. Every door after it.</h2>
+      <div class="shot" aria-label="Revenue screenshot placeholder">📊 REVENUE SCREENSHOT</div>
+      <div class="stat-row">
+        <div class="stat"><b>₹27.79L</b><span>YouTube revenue</span></div>
+        <div class="stat"><b>489K</b><span>Subscribers</span></div>
+        <div class="stat"><b>16.3 Cr</b><span>Views</span></div>
+        <div class="stat"><b>₹1 Cr</b><span>By age 22</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · HOW IT STARTED -->
+  <section class="slide statement" data-act="ACT I">
+    <div class="slide-in">
+      <p class="eyebrow">Year one</p>
+      <h2 class="huge">After a year of this, I was earning ₹50 a month.</h2>
+      <p class="stmt-note">That is the part nobody posts about</p>
+    </div>
+  </section>
+
+  <!-- 5 · ACT II: THE TURN -->
+  <section class="slide statement" data-act="ACT II">
+    <div class="slide-in">
+      <p class="eyebrow">Act II</p>
+      <h2 class="huge">You already have a personal brand.</h2>
+      <p class="sub">When someone searches your name, <strong>something</strong> comes up, or nothing does. Both are a brand.</p>
+      <span class="try">Try it tonight: search your own name.</span>
+    </div>
+  </section>
+
+  <!-- 6 · WHAT A BRAND IS -->
+  <section class="slide" data-act="ACT II">
+    <div class="slide-in">
+      <p class="eyebrow">What it actually is</p>
+      <p class="formula" aria-label="Brand equals proof times trust times distribution"><span class="eq">BRAND =</span> PROOF <span class="x">×</span> TRUST <span class="x">×</span> DISTRIBUTION</p>
+      <p class="sub">Not posting pictures. Not looking successful. When people hear your name, they associate it with something valuable.</p>
+    </div>
+  </section>
+
+  <!-- 7 · WHAT YOU GAIN -->
+  <section class="slide" data-act="ACT II">
+    <div class="slide-in">
+      <p class="eyebrow">What you actually gain</p>
+      <h2 class="big">The skills nobody puts on a resume.</h2>
+      <div class="rungs">
+        <div class="rung"><b>Writing &amp; storytelling</b><span>You learn to make a point people finish reading.</span></div>
+        <div class="rung"><b>Speaking on camera</b><span>The thing most engineers never practise.</span></div>
+        <div class="rung"><b>Design &amp; editing</b><span>Making work look like it deserves attention.</span></div>
+        <div class="rung"><b>Marketing &amp; selling</b><span>Distribution. How good work gets found.</span></div>
+      </div>
+      <p class="remember"><span class="lbl">Remember</span>Two students with equal skills are not equal. The visible one gets the call.</p>
+    </div>
+  </section>
+
+  <!-- 8 · THE LADDER -->
+  <section class="slide" data-act="ACT II">
+    <div class="slide-in">
+      <p class="eyebrow">How money actually arrives</p>
+      <h2 class="big">A ladder, not a shortcut.</h2>
+      <div class="rungs">
+        <div class="rung"><b>Useful content</b><span>Something another student can actually use.</span></div>
+        <div class="rung"><b>Trust</b><span>People come back and start to rely on you.</span></div>
+        <div class="rung"><b>Collaborations</b><span>Freelance work and paid opportunities appear.</span></div>
+        <div class="rung"><b>Ads · courses · community</b><span>The audience itself generates income.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · ACT III: THE STRATEGY STATEMENT -->
+  <section class="slide statement" data-act="ACT III">
+    <div class="slide-in">
+      <p class="eyebrow">Act III</p>
+      <h2 class="huge">Don't make videos you think will work.</h2>
+      <p class="stmt-note">Make videos people are actually looking for</p>
+    </div>
+  </section>
+
+  <!-- 10 · THE STRATEGY -->
+  <section class="slide" data-act="ACT III">
+    <div class="slide-in">
+      <p class="eyebrow">The strategy</p>
+      <h2 class="big">Four steps. Start tonight.</h2>
+      <div class="rungs">
+        <div class="rung"><b>Pick a niche you can defend</b><span>What can you honestly speak on today? Just finished 12th? Make content for students doing 12th.</span></div>
+        <div class="rung"><b>Fix your audience from day zero</b><span>One clear person you're talking to. Every video.</span></div>
+        <div class="rung"><b>Study 10 channels like yours</b><span>Note what worked. Shortlist 1–2 concepts from each that fit you. Now you have 10–20 proven ideas.</span></div>
+        <div class="rung"><b>One video a week</b><span>From that shortlist. Don't reinvent. Iterate.</span></div>
+      </div>
+      <p class="remember"><span class="lbl">Remember</span>One video a week beats ten videos and then silence.</p>
+    </div>
+  </section>
+
+  <!-- 11 · PLATFORM -->
+  <section class="slide" data-act="ACT III">
+    <div class="slide-in">
+      <p class="eyebrow">Pick one · Saved on this site</p>
+      <h2 class="big">One platform. Ninety days.</h2>
+      <div class="platforms" role="radiogroup" aria-label="Primary platform">
+        <div class="platform">
+          <input type="radio" name="platform" id="pf-yt" value="youtube">
+          <label for="pf-yt"><span class="p-name">YouTube <span class="tick" aria-hidden="true"></span></span><span class="p-role">Depth + search</span></label>
+        </div>
+        <div class="platform">
+          <input type="radio" name="platform" id="pf-ig" value="instagram">
+          <label for="pf-ig"><span class="p-name">Instagram <span class="tick" aria-hidden="true"></span></span><span class="p-role">Fast feedback</span></label>
+        </div>
+        <div class="platform">
+          <input type="radio" name="platform" id="pf-li" value="linkedin">
+          <label for="pf-li"><span class="p-name">LinkedIn <span class="tick" aria-hidden="true"></span></span><span class="p-role">Credibility</span></label>
+        </div>
+      </div>
+      <p class="sub">One platform mastered beats three abandoned.</p>
+    </div>
+  </section>
+
+  <!-- 12 · TRACKER -->
+  <section class="slide" data-act="ACT III" id="roadmapSlide">
+    <div class="slide-in" style="margin-top:0">
+      <p class="eyebrow">Your roadmap · Yours to keep</p>
+      <h2 class="big">The 30-day start.</h2>
+      <p class="sub"><strong>Bookmark this page.</strong> Tick these off as you go. Your progress is saved here.</p>
+
+      <div class="tracker" id="tracker">
+        <div class="tracker-head">
+          <div class="tracker-meta">
+            <span class="prog-num"><b id="progCount">0</b>/<span id="progTotal">8</span> done</span>
+            <span class="tbar"><i id="progBar"></i></span>
+          </div>
+          <div class="tracker-meta">
+            <button class="btn btn-amber" id="startBtn" type="button">I'm starting today</button>
+            <span class="day-count" id="dayCount"></span>
+          </div>
+        </div>
+        <div class="start-wrap" id="startNote">
+          <span class="start-note">Press start and this becomes your Day 1 → Day 30 tracker.</span>
+        </div>
+
+        <div class="phase">
+          <p class="phase-t">Set up</p>
+          <div class="step"><input type="checkbox" id="s1" data-step="s1"><label for="s1">Search your own name and screenshot what shows up</label></div>
+          <div class="step"><input type="checkbox" id="s2" data-step="s2"><label for="s2">Decide the niche you can honestly speak on</label></div>
+          <div class="step"><input type="checkbox" id="s3" data-step="s3"><label for="s3">Pick one platform for 90 days</label></div>
+        </div>
+
+        <div class="phase">
+          <p class="phase-t">Study</p>
+          <div class="step"><input type="checkbox" id="s4" data-step="s4"><label for="s4">List 10 channels in your niche and note what works</label></div>
+          <div class="step"><input type="checkbox" id="s5" data-step="s5"><label for="s5">Shortlist 10–20 concepts that fit you</label></div>
+        </div>
+
+        <div class="phase">
+          <p class="phase-t">Ship</p>
+          <div class="step"><input type="checkbox" id="s6" data-step="s6"><label for="s6">Publish your first video</label></div>
+          <div class="step"><input type="checkbox" id="s7" data-step="s7"><label for="s7">One video a week, no skipped weeks</label></div>
+          <div class="step"><input type="checkbox" id="s8" data-step="s8"><label for="s8">Review one metric weekly, improve one thing</label></div>
+        </div>
+
+        <p class="complete-msg" id="completeMsg"><b>Done.</b> You did the thing most people only bookmark. Tag <b>@codewithswaroop</b> and keep publishing.</p>
+        <p class="tracker-foot">SAVED IN THIS BROWSER. BOOKMARK THIS PAGE AND COME BACK.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · SUPPORT -->
+  <section class="slide" data-act="ACT III">
+    <div class="slide-in">
+      <p class="eyebrow">Take these with you</p>
+      <h2 class="big">Two things before you leave.</h2>
+      <div class="qr-pair">
+        <div class="qr-item">
+          <div class="qr-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" shape-rendering="crispEdges" role="img" aria-label="Session website QR code"><rect width="37" height="37" fill="#F5F4F2"/><path d="M4 4h7v1h-7zM13 4h1v1h-1zM16 4h4v1h-4zM21 4h1v1h-1zM26 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM15 5h1v1h-1zM19 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM12 6h2v1h-2zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM26 6h1v1h-1zM28 6h3v1h-3zM32 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM12 7h3v1h-3zM16 7h1v1h-1zM18 7h4v1h-4zM23 7h2v1h-2zM26 7h1v1h-1zM28 7h3v1h-3zM32 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM13 8h2v1h-2zM16 8h4v1h-4zM22 8h3v1h-3zM26 8h1v1h-1zM28 8h3v1h-3zM32 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM15 9h4v1h-4zM21 9h2v1h-2zM26 9h1v1h-1zM32 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h7v1h-7zM12 11h3v1h-3zM16 11h2v1h-2zM22 11h1v1h-1zM24 11h1v1h-1zM4 12h1v1h-1zM10 12h1v1h-1zM12 12h3v1h-3zM16 12h1v1h-1zM18 12h2v1h-2zM21 12h2v1h-2zM24 12h3v1h-3zM29 12h3v1h-3zM5 13h2v1h-2zM9 13h1v1h-1zM11 13h1v1h-1zM13 13h2v1h-2zM18 13h1v1h-1zM20 13h4v1h-4zM27 13h2v1h-2zM30 13h2v1h-2zM8 14h7v1h-7zM16 14h1v1h-1zM19 14h3v1h-3zM24 14h2v1h-2zM27 14h1v1h-1zM5 15h1v1h-1zM8 15h1v1h-1zM14 15h1v1h-1zM18 15h3v1h-3zM22 15h1v1h-1zM25 15h1v1h-1zM27 15h3v1h-3zM4 16h1v1h-1zM6 16h2v1h-2zM9 16h3v1h-3zM13 16h1v1h-1zM15 16h4v1h-4zM20 16h1v1h-1zM24 16h1v1h-1zM26 16h1v1h-1zM32 16h1v1h-1zM11 17h3v1h-3zM17 17h3v1h-3zM21 17h8v1h-8zM31 17h2v1h-2zM5 18h2v1h-2zM8 18h1v1h-1zM10 18h1v1h-1zM14 18h1v1h-1zM16 18h4v1h-4zM22 18h1v1h-1zM24 18h2v1h-2zM27 18h1v1h-1zM29 18h2v1h-2zM4 19h1v1h-1zM7 19h1v1h-1zM9 19h1v1h-1zM12 19h1v1h-1zM14 19h2v1h-2zM17 19h2v1h-2zM23 19h1v1h-1zM28 19h1v1h-1zM30 19h1v1h-1zM32 19h1v1h-1zM4 20h2v1h-2zM7 20h1v1h-1zM9 20h3v1h-3zM16 20h1v1h-1zM18 20h2v1h-2zM21 20h1v1h-1zM27 20h1v1h-1zM29 20h2v1h-2zM4 21h2v1h-2zM8 21h1v1h-1zM13 21h4v1h-4zM19 21h6v1h-6zM26 21h3v1h-3zM30 21h3v1h-3zM4 22h2v1h-2zM7 22h1v1h-1zM10 22h11v1h-11zM23 22h2v1h-2zM27 22h1v1h-1zM29 22h1v1h-1zM32 22h1v1h-1zM4 23h1v1h-1zM8 23h1v1h-1zM12 23h1v1h-1zM16 23h1v1h-1zM18 23h3v1h-3zM23 23h4v1h-4zM4 24h1v1h-1zM6 24h1v1h-1zM9 24h2v1h-2zM12 24h1v1h-1zM14 24h1v1h-1zM21 24h8v1h-8zM30 24h3v1h-3zM12 25h1v1h-1zM17 25h1v1h-1zM19 25h1v1h-1zM21 25h2v1h-2zM24 25h1v1h-1zM28 25h2v1h-2zM4 26h7v1h-7zM13 26h1v1h-1zM15 26h1v1h-1zM17 26h5v1h-5zM23 26h2v1h-2zM26 26h1v1h-1zM28 26h3v1h-3zM4 27h1v1h-1zM10 27h1v1h-1zM14 27h1v1h-1zM16 27h2v1h-2zM24 27h1v1h-1zM28 27h1v1h-1zM32 27h1v1h-1zM4 28h1v1h-1zM6 28h3v1h-3zM10 28h1v1h-1zM13 28h1v1h-1zM16 28h2v1h-2zM19 28h2v1h-2zM23 28h7v1h-7zM31 28h2v1h-2zM4 29h1v1h-1zM6 29h3v1h-3zM10 29h1v1h-1zM13 29h2v1h-2zM19 29h2v1h-2zM22 29h1v1h-1zM25 29h1v1h-1zM29 29h2v1h-2zM32 29h1v1h-1zM4 30h1v1h-1zM6 30h3v1h-3zM10 30h1v1h-1zM16 30h1v1h-1zM19 30h1v1h-1zM21 30h2v1h-2zM25 30h7v1h-7zM4 31h1v1h-1zM10 31h1v1h-1zM15 31h1v1h-1zM17 31h4v1h-4zM22 31h2v1h-2zM25 31h1v1h-1zM29 31h2v1h-2zM32 31h1v1h-1zM4 32h7v1h-7zM12 32h1v1h-1zM15 32h1v1h-1zM18 32h4v1h-4zM23 32h1v1h-1zM26 32h1v1h-1zM28 32h1v1h-1zM30 32h1v1h-1z" fill="#0A0A0B"/></svg></div>
+          <p class="qr-title">This deck &amp; your roadmap</p>
+          <p class="qr-url">bjswaroop.github.io/brand</p>
+        </div>
+        <div class="qr-item">
+          <div class="qr-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" shape-rendering="crispEdges" role="img" aria-label="WhatsApp group QR code"><rect width="41" height="41" fill="#F5F4F2"/><path d="M4 4h7v1h-7zM12 4h6v1h-6zM20 4h3v1h-3zM24 4h2v1h-2zM30 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM17 5h2v1h-2zM23 5h4v1h-4zM28 5h1v1h-1zM30 5h1v1h-1zM36 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM12 6h2v1h-2zM15 6h1v1h-1zM17 6h4v1h-4zM23 6h1v1h-1zM25 6h3v1h-3zM30 6h1v1h-1zM32 6h3v1h-3zM36 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM13 7h1v1h-1zM15 7h2v1h-2zM18 7h5v1h-5zM24 7h2v1h-2zM27 7h2v1h-2zM30 7h1v1h-1zM32 7h3v1h-3zM36 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM12 8h1v1h-1zM15 8h2v1h-2zM19 8h2v1h-2zM23 8h1v1h-1zM25 8h1v1h-1zM27 8h1v1h-1zM30 8h1v1h-1zM32 8h3v1h-3zM36 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM14 9h1v1h-1zM16 9h5v1h-5zM25 9h1v1h-1zM27 9h1v1h-1zM30 9h1v1h-1zM36 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h7v1h-7zM13 11h1v1h-1zM15 11h3v1h-3zM19 11h2v1h-2zM22 11h2v1h-2zM26 11h1v1h-1zM28 11h1v1h-1zM4 12h1v1h-1zM7 12h6v1h-6zM15 12h2v1h-2zM18 12h1v1h-1zM21 12h1v1h-1zM23 12h2v1h-2zM27 12h3v1h-3zM32 12h1v1h-1zM34 12h3v1h-3zM4 13h4v1h-4zM14 13h4v1h-4zM21 13h3v1h-3zM25 13h4v1h-4zM32 13h4v1h-4zM5 14h3v1h-3zM9 14h2v1h-2zM12 14h1v1h-1zM15 14h1v1h-1zM17 14h1v1h-1zM19 14h1v1h-1zM21 14h1v1h-1zM24 14h1v1h-1zM26 14h5v1h-5zM32 14h5v1h-5zM16 15h2v1h-2zM19 15h1v1h-1zM21 15h1v1h-1zM26 15h2v1h-2zM30 15h2v1h-2zM34 15h3v1h-3zM5 16h6v1h-6zM12 16h1v1h-1zM16 16h2v1h-2zM19 16h2v1h-2zM23 16h3v1h-3zM27 16h2v1h-2zM30 16h1v1h-1zM36 16h1v1h-1zM4 17h1v1h-1zM9 17h1v1h-1zM12 17h2v1h-2zM15 17h1v1h-1zM17 17h2v1h-2zM22 17h1v1h-1zM25 17h1v1h-1zM31 17h1v1h-1zM5 18h2v1h-2zM8 18h5v1h-5zM14 18h1v1h-1zM18 18h9v1h-9zM28 18h1v1h-1zM30 18h2v1h-2zM34 18h1v1h-1zM4 19h2v1h-2zM9 19h1v1h-1zM12 19h3v1h-3zM18 19h1v1h-1zM20 19h1v1h-1zM23 19h1v1h-1zM26 19h1v1h-1zM29 19h1v1h-1zM32 19h3v1h-3zM36 19h1v1h-1zM4 20h2v1h-2zM7 20h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM14 20h2v1h-2zM19 20h1v1h-1zM23 20h1v1h-1zM26 20h2v1h-2zM29 20h5v1h-5zM5 21h1v1h-1zM9 21h1v1h-1zM12 21h1v1h-1zM14 21h3v1h-3zM19 21h1v1h-1zM21 21h6v1h-6zM30 21h1v1h-1zM32 21h1v1h-1zM34 21h2v1h-2zM6 22h7v1h-7zM15 22h6v1h-6zM23 22h1v1h-1zM26 22h2v1h-2zM29 22h3v1h-3zM33 22h2v1h-2zM36 22h1v1h-1zM4 23h1v1h-1zM6 23h1v1h-1zM12 23h3v1h-3zM18 23h3v1h-3zM23 23h2v1h-2zM26 23h1v1h-1zM28 23h1v1h-1zM32 23h4v1h-4zM4 24h1v1h-1zM9 24h2v1h-2zM14 24h3v1h-3zM18 24h4v1h-4zM23 24h1v1h-1zM25 24h1v1h-1zM28 24h1v1h-1zM31 24h3v1h-3zM35 24h1v1h-1zM4 25h1v1h-1zM12 25h1v1h-1zM15 25h3v1h-3zM20 25h4v1h-4zM26 25h1v1h-1zM30 25h5v1h-5zM4 26h1v1h-1zM6 26h1v1h-1zM9 26h2v1h-2zM12 26h5v1h-5zM18 26h2v1h-2zM25 26h1v1h-1zM27 26h1v1h-1zM30 26h3v1h-3zM35 26h2v1h-2zM4 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM12 27h2v1h-2zM15 27h3v1h-3zM21 27h1v1h-1zM24 27h1v1h-1zM27 27h4v1h-4zM32 27h1v1h-1zM34 27h1v1h-1zM36 27h1v1h-1zM4 28h2v1h-2zM8 28h1v1h-1zM10 28h1v1h-1zM12 28h2v1h-2zM15 28h1v1h-1zM18 28h3v1h-3zM24 28h1v1h-1zM27 28h6v1h-6zM35 28h1v1h-1zM12 29h1v1h-1zM17 29h1v1h-1zM20 29h3v1h-3zM26 29h1v1h-1zM28 29h1v1h-1zM32 29h1v1h-1zM34 29h1v1h-1zM4 30h7v1h-7zM12 30h1v1h-1zM14 30h1v1h-1zM16 30h1v1h-1zM19 30h1v1h-1zM22 30h4v1h-4zM27 30h2v1h-2zM30 30h1v1h-1zM32 30h1v1h-1zM34 30h1v1h-1zM4 31h1v1h-1zM10 31h1v1h-1zM12 31h5v1h-5zM19 31h1v1h-1zM23 31h2v1h-2zM27 31h2v1h-2zM32 31h5v1h-5zM4 32h1v1h-1zM6 32h3v1h-3zM10 32h1v1h-1zM12 32h3v1h-3zM18 32h1v1h-1zM20 32h2v1h-2zM24 32h1v1h-1zM27 32h6v1h-6zM36 32h1v1h-1zM4 33h1v1h-1zM6 33h3v1h-3zM10 33h1v1h-1zM12 33h3v1h-3zM16 33h1v1h-1zM19 33h1v1h-1zM23 33h2v1h-2zM27 33h3v1h-3zM31 33h1v1h-1zM33 33h4v1h-4zM4 34h1v1h-1zM6 34h3v1h-3zM10 34h1v1h-1zM13 34h1v1h-1zM18 34h2v1h-2zM21 34h1v1h-1zM23 34h1v1h-1zM25 34h1v1h-1zM27 34h1v1h-1zM29 34h1v1h-1zM31 34h3v1h-3zM35 34h2v1h-2zM4 35h1v1h-1zM10 35h1v1h-1zM15 35h2v1h-2zM18 35h3v1h-3zM31 35h6v1h-6zM4 36h7v1h-7zM12 36h1v1h-1zM14 36h1v1h-1zM18 36h1v1h-1zM20 36h3v1h-3zM24 36h1v1h-1zM27 36h7v1h-7z" fill="#0A0A0B"/></svg></div>
+          <p class="qr-title">The WhatsApp group</p>
+          <p class="qr-url"><a href="https://chat.whatsapp.com/FfX7qrWxgrrBvsNaDIFnKE?mode=gi_t" target="_blank" rel="noopener" id="waLink">Tap to join</a></p>
+        </div>
+      </div>
+      <p class="sub">This is not a one time session. Post your first video in the group and I will look at it.</p>
+    </div>
+  </section>
+
+  <!-- 14 · CLOSE -->
+  <section class="slide statement" data-act="START">
+    <div class="slide-in">
+      <h2 class="huge">Start now.<br>Not tomorrow.</h2>
+      <p class="close-url">bjswaroop.github.io/brand</p>
+      <div class="meta-row">
+        <a href="https://youtube.com/@SwaroopVITB" target="_blank" rel="noopener">YOUTUBE · SWAROOP TALKS</a><span class="sep">|</span>
+        <a href="https://instagram.com/codewithswaroop" target="_blank" rel="noopener">INSTAGRAM · @CODEWITHSWAROOP</a><span class="sep">|</span>
+        <a href="https://linkedin.com/in/swaroop-talks" target="_blank" rel="noopener">LINKEDIN · SWAROOP TALKS</a>
+      </div>
+      <div style="margin-top:30px"><button class="btn btn-ghost" id="toRoadmap" type="button">← Back to the roadmap</button></div>
+    </div>
+  </section>
+
+</main>
+
+<div class="scrim" aria-hidden="true"></div>
+<div class="navs">
+  <button class="navbtn" id="prevBtn" type="button" aria-label="Previous slide">←</button>
+  <button class="navbtn primary" id="nextBtn" type="button" aria-label="Next slide">→</button>
+</div>
+<p class="key-hint">← → ARROW KEYS · SWIPE ON MOBILE</p>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "pb30_v1";
+  var mem = {};
+  function load(){
+    try{
+      var raw = window.localStorage.getItem(KEY);
+      return raw ? JSON.parse(raw) : {};
+    }catch(e){ return mem; }
+  }
+  function save(state){
+    mem = state;
+    try{ window.localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  var state = load();
+  if(typeof state !== "object" || state === null) state = {};
+  if(!state.checks) state.checks = {};
+
+  var chromeEl = document.querySelector(".chrome");
+  function syncChrome(){
+    var h = Math.ceil(chromeEl.getBoundingClientRect().height);
+    if(h > 0) document.documentElement.style.setProperty("--chrome-h", h + "px");
+  }
+  syncChrome();
+  window.addEventListener("resize", syncChrome);
+
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var N = slides.length;
+  var cur = 0;
+  var deckBar = document.getElementById("deckBar");
+  var curSlide = document.getElementById("curSlide");
+  var totSlide = document.getElementById("totSlide");
+  var actLabel = document.getElementById("actLabel");
+  var prevBtn = document.getElementById("prevBtn");
+  var nextBtn = document.getElementById("nextBtn");
+  var roadmapIndex = slides.indexOf(document.getElementById("roadmapSlide"));
+
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  totSlide.textContent = pad(N);
+
+  function show(i, skipSave){
+    if(i < 0) i = 0;
+    if(i > N - 1) i = N - 1;
+    slides[cur].classList.remove("active");
+    cur = i;
+    var s = slides[cur];
+    s.classList.add("active");
+    s.scrollTop = 0;
+    deckBar.style.width = (N > 1 ? (cur / (N - 1)) * 100 : 100) + "%";
+    curSlide.textContent = pad(cur + 1);
+    actLabel.textContent = s.getAttribute("data-act") || "";
+    prevBtn.disabled = cur === 0;
+    nextBtn.disabled = cur === N - 1;
+    if(!skipSave){
+      state.slide = cur;
+      save(state);
+    }
+    try{ history.replaceState(null, "", "#" + (cur + 1)); }catch(e){}
+  }
+
+  prevBtn.addEventListener("click", function(){ show(cur - 1); });
+  nextBtn.addEventListener("click", function(){ show(cur + 1); });
+  document.getElementById("toRoadmap").addEventListener("click", function(){
+    if(roadmapIndex >= 0) show(roadmapIndex);
+  });
+
+  document.addEventListener("keydown", function(e){
+    var t = e.target;
+    var tag = t && t.tagName ? t.tagName.toLowerCase() : "";
+    if(tag === "input" || tag === "textarea" || tag === "select" || tag === "button" || tag === "a") return;
+    if(e.key === "ArrowRight" || e.key === "PageDown" || e.key === " "){ e.preventDefault(); show(cur + 1); }
+    else if(e.key === "ArrowLeft" || e.key === "PageUp"){ e.preventDefault(); show(cur - 1); }
+    else if(e.key === "Home"){ e.preventDefault(); show(0); }
+    else if(e.key === "End"){ e.preventDefault(); show(N - 1); }
+  });
+
+  var touchX = null, touchY = null;
+  document.addEventListener("touchstart", function(e){
+    if(e.touches.length !== 1) return;
+    var t = e.target;
+    if(t.closest && (t.closest("input") || t.closest("label") || t.closest("button") || t.closest("a"))){ touchX = null; return; }
+    touchX = e.touches[0].clientX;
+    touchY = e.touches[0].clientY;
+  }, {passive: true});
+  document.addEventListener("touchend", function(e){
+    if(touchX === null) return;
+    var dx = e.changedTouches[0].clientX - touchX;
+    var dy = e.changedTouches[0].clientY - touchY;
+    touchX = null;
+    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5){
+      if(dx < 0) show(cur + 1); else show(cur - 1);
+    }
+  }, {passive: true});
+
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".step input[type=checkbox]"));
+  var progCount = document.getElementById("progCount");
+  var progTotal = document.getElementById("progTotal");
+  var progBar = document.getElementById("progBar");
+  var completeMsg = document.getElementById("completeMsg");
+  var startBtn = document.getElementById("startBtn");
+  var dayCount = document.getElementById("dayCount");
+  var startNote = document.getElementById("startNote");
+  var navDay = document.getElementById("navDay");
+
+  progTotal.textContent = String(boxes.length);
+
+  function renderProgress(){
+    var done = 0;
+    boxes.forEach(function(b){
+      var row = b.closest(".step");
+      if(b.checked){ done++; if(row) row.classList.add("done"); }
+      else if(row){ row.classList.remove("done"); }
+    });
+    progCount.textContent = String(done);
+    progBar.style.width = (boxes.length ? Math.round(done / boxes.length * 100) : 0) + "%";
+    completeMsg.classList.toggle("on", done === boxes.length && boxes.length > 0);
+  }
+
+  boxes.forEach(function(b){
+    if(state.checks[b.dataset.step]) b.checked = true;
+    b.addEventListener("change", function(){
+      state.checks[b.dataset.step] = b.checked;
+      save(state);
+      renderProgress();
+    });
+  });
+
+  var radios = Array.prototype.slice.call(document.querySelectorAll('input[name="platform"]'));
+  radios.forEach(function(r){
+    if(state.platform === r.value) r.checked = true;
+    r.addEventListener("change", function(){
+      if(r.checked){ state.platform = r.value; save(state); }
+    });
+  });
+
+  function daysSince(iso){
+    var start = new Date(iso + "T00:00:00");
+    if(isNaN(start.getTime())) return null;
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.round((today - start) / 86400000) + 1;
+  }
+  function todayISO(){
+    var d = new Date();
+    var m = String(d.getMonth() + 1); if(m.length < 2) m = "0" + m;
+    var day = String(d.getDate()); if(day.length < 2) day = "0" + day;
+    return d.getFullYear() + "-" + m + "-" + day;
+  }
+
+  function renderDay(){
+    if(!state.startedOn){
+      startBtn.style.display = "";
+      dayCount.style.display = "none";
+      startNote.style.display = "";
+      navDay.classList.remove("on");
+      return;
+    }
+    var n = daysSince(state.startedOn);
+    if(n === null || n < 1){ state.startedOn = null; save(state); return; }
+    startBtn.style.display = "none";
+    startNote.style.display = "none";
+    dayCount.style.display = "inline";
+    if(n <= 30){
+      dayCount.innerHTML = "DAY <b>" + n + "</b> OF 30";
+      navDay.textContent = "DAY " + n + "/30";
+    }else{
+      dayCount.innerHTML = "DAY <b>30+</b>. The habit is yours now.";
+      navDay.textContent = "DAY 30+";
+    }
+    navDay.classList.add("on");
+    syncChrome();
+  }
+
+  startBtn.addEventListener("click", function(){
+    state.startedOn = todayISO();
+    save(state);
+    renderDay();
+  });
+
+  renderProgress();
+  renderDay();
+
+  var initial = 0;
+  var h = parseInt((location.hash || "").replace(/[^0-9]/g, ""), 10);
+  if(h >= 1 && h <= N) initial = h - 1;
+  else if(typeof state.slide === "number" && state.slide >= 0 && state.slide < N) initial = state.slide;
+  slides[0].classList.add("active");
+  show(initial, true);
+})();
+</script>
